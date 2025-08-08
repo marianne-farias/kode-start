@@ -3,10 +3,12 @@ import '../models/character_model.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 
+
 class CharacterCard extends StatelessWidget {
   final Character character;
   final VoidCallback? onTap;
 
+  /// Exibe um card com imagem e nome do personagem.
   const CharacterCard({super.key, required this.character, this.onTap});
 
   @override
@@ -18,17 +20,18 @@ class CharacterCard extends StatelessWidget {
       onTap: onTap,
       child: Align(
         alignment: Alignment.center,
-          child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 2,
-            child: SizedBox(
+        child: Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 2,
+          child: SizedBox(
             width: cardWidth,
             height: cardHeight,
             child: Stack(
               children: [
+                // Imagem do personagem
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -39,6 +42,7 @@ class CharacterCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) => const SizedBox(),
                   ),
                 ),
+                // Nome do personagem
                 Positioned(
                   left: 0,
                   right: 0,

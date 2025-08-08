@@ -5,15 +5,20 @@ import 'package:rick_and_morty_app/theme/app_colors.dart';
 import 'package:rick_and_morty_app/theme/app_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+
+/// Função principal do app. Inicializa o binding do Flutter, a internacionalização
+/// e define o estilo da status bar. Em seguida, executa o app com EasyLocalization.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  // Define cor e ícones da status bar
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: AppColors.appBarColor,
     statusBarIconBrightness: Brightness.light,
   ));
 
+  // Inicializa o app com suporte a múltiplos idiomas
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('pt')],
@@ -24,6 +29,8 @@ void main() async {
   );
 }
 
+
+/// Widget principal do app, define o tema, página inicial e configurações de localização.
 class RickAndMortyApp extends StatelessWidget {
   const RickAndMortyApp({super.key});
 
@@ -53,6 +60,7 @@ class RickAndMortyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
+      // Configurações de localização
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

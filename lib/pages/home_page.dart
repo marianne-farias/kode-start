@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../services/api_service.dart';
+import '../repository/api_repository.dart';
 import '../models/character_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'menu_page.dart';
@@ -10,6 +10,8 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 import 'character_detail_page.dart';
 
+
+/// HomePage: tela inicial do app, exibe personagens e gerencia navegação/menu.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -17,8 +19,10 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
   // Atualiza a lista de personagens (pull-to-refresh)
+  // Reseta a página e busca novamente da API
   Future<void> _refresh() async {
     setState(() {
       _currentPage = 1;
@@ -29,12 +33,12 @@ class _HomePageState extends State<HomePage> {
     await _fetchCharacters();
   }
 
-  // Busca personagens da API
+  // Busca personagens da API, faz paginação e trata erros
   Future<void> _fetchCharacters() async {
     if (_isLoading || !_hasMore) return;
     setState(() => _isLoading = true);
     try {
-      final newCharacters = await ApiService.fetchCharacters(page: _currentPage);
+  final newCharacters = await ApiRepository.fetchCharacters(page: _currentPage);
       setState(() {
         if (_currentPage == 1) {
           _characters.clear();
@@ -54,7 +58,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Abre detalhes do personagem
+  // Abre detalhes do personagem com animação de slide
   void _openDetails(Character character) {
     setState(() => _showBack = true);
     _navigatorKey.currentState?.push(
@@ -79,6 +83,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // Inicializa a busca de personagens ao abrir a tela
     _fetchCharacters();
   }
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();

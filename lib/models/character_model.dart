@@ -1,14 +1,14 @@
 class Character {
-  final int id;
-  final String name;
-  final String imageUrl;
-  final String status;
-  final String species;
-  final String gender;
-  final String originName;
-  final String lastLocationName;
-  final List<String> episodeUrls;
-  final String? firstEpisodeName;
+  final int id; 
+  final String name; 
+  final String imageUrl; 
+  final String status; 
+  final String species; 
+  final String gender; 
+  final String originName; 
+  final String lastLocationName; 
+  final List<String> episodeUrls; 
+  final String? firstEpisodeName; 
 
   Character({
     required this.id,
@@ -23,6 +23,7 @@ class Character {
     this.firstEpisodeName,
   });
 
+  /// Cria um Character a partir de um JSON da API
   factory Character.fromJson(Map<String, dynamic> json) {
     return Character(
       id: json['id'] as int,
@@ -38,6 +39,7 @@ class Character {
     );
   }
 
+  /// Cria uma cópia do Character com campos modificados
   Character copyWith({
     int? id,
     String? name,

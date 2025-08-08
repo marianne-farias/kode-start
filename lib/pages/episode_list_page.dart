@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/theme/app_colors.dart';
 import 'package:rick_and_morty_app/theme/app_fonts.dart';
-import '../services/api_service.dart';
+import '../repository/api_repository.dart';
 
+
+/// Exibe uma lista de episódios, traduzindo o prefixo "Episode" se necessário.
 class EpisodeListPage extends StatefulWidget {
   final List<String> episodeUrls;
 
@@ -13,18 +15,21 @@ class EpisodeListPage extends StatefulWidget {
   State<EpisodeListPage> createState() => _EpisodeListPageState();
 }
 
+
 class _EpisodeListPageState extends State<EpisodeListPage> {
   late Future<List<String>> _episodesFuture;
 
   @override
   void initState() {
     super.initState();
-    _episodesFuture = ApiService.fetchEpisodeNames(widget.episodeUrls);
+    // Busca os nomes dos episódios ao abrir a página
+  _episodesFuture = ApiRepository.fetchEpisodeNames(widget.episodeUrls);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Usa FutureBuilder para aguardar a resposta da API
       body: FutureBuilder<List<String>>(
         future: _episodesFuture,
         builder: (context, snapshot) {
@@ -39,6 +44,7 @@ class _EpisodeListPageState extends State<EpisodeListPage> {
             itemCount: episodes.length,
             itemBuilder: (context, index) {
               final episodeName = episodes[index];
+              // Traduz apenas o prefixo "Episode" se necessário
               final translated = episodeName.toLowerCase().startsWith('episode')
                   ? 'episode'.tr() + episodeName.substring(7)
                   : episodeName;

@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 
+/// AppBar customizada com logo central, ícone de menu/back à esquerda e ícone de usuário à direita.
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final VoidCallback? onSearch;
   final bool showSearchButton;
 
+  /// [leading]: ícone à esquerda (menu ou seta back)
+  /// [onSearch]: callback do botão de busca
+  /// [showSearchButton]: exibe ou não o botão de busca
   const CustomAppBar({
     super.key,
     this.leading,
@@ -37,16 +41,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Ícone de menu ou back, sempre ocupando o SizedBox
+                    // Ícone de menu ou back
                     Padding(
-                      padding: const EdgeInsets.only(top: 12, left: 8), // alinhamento igual ao ícone de pessoa
+                      padding: const EdgeInsets.only(top: 12, left: 8),
                       child: SizedBox(
                         width: 31.46,
                         height: 31.46,
                         child: leading,
                       ),
                     ),
-                    // Logo centralizada
+                    // Logo central
                     const Padding(
                       padding: EdgeInsets.only(top: 6),
                       child: Image(
@@ -55,7 +59,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         height: 76.99,
                       ),
                     ),
-                    // Ícone de pessoa alinhado à direita
+                    // Ícone de usuário à direita
                     Padding(
                       padding: const EdgeInsets.only(top: 12, right: 8),
                       child: Icon(Icons.account_circle, color: Colors.white, size: 31.46),

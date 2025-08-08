@@ -2,15 +2,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/character_model.dart';
-import 'episode_list_page.dart'; // Importe a nova página
+import 'episode_list_page.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
 
+/// Exibe detalhes completos de um personagem, incluindo status, espécie, gênero, origem e episódios.
 class CharacterDetailPage extends StatelessWidget {
   final Character character;
 
   const CharacterDetailPage({super.key, required this.character});
 
+  /// Retorna a cor do status do personagem (vivo, morto, desconhecido)
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'alive':
@@ -24,6 +26,7 @@ class CharacterDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Largura do card responsiva
     final cardWidth = MediaQuery.of(context).size.width * 0.9;
 
     return Scaffold(
@@ -38,11 +41,9 @@ class CharacterDetailPage extends StatelessWidget {
               color: Colors.transparent,
               child: Stack(
                 children: [
-                  // Container azul ocupa todo o card
                   Container(
                     width: cardWidth,
-                    // altura total: imagem + infos
-                    padding: EdgeInsets.only(top: 80), // metade da altura da imagem para sobrepor
+                    padding: EdgeInsets.only(top: 80), 
                     decoration: BoxDecoration(
                       color: AppColors.cardColor,
                       borderRadius: BorderRadius.circular(10),
@@ -52,22 +53,21 @@ class CharacterDetailPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 64), // Espaço de 16px após a imagem
+                          const SizedBox(height: 64), 
 
-                          // Nome
+                          // Nome do personagem
                           Text(
                             character.name.toUpperCase(),
                             style: AppFonts.nameCard.copyWith(color: Colors.white),
                             maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
                           ),
-                          const SizedBox(height: 32), // <-- Espaço grande após o nome
+                          const SizedBox(height: 32), 
 
-                          // Informações
+                          // Linha de informações principais
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Bolinha de status
                               Container(
                                 width: 10,
                                 height: 10,
@@ -92,6 +92,12 @@ class CharacterDetailPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text('gender'.tr(), style: AppFonts.cardText),
                           Text('gender_${character.gender.toLowerCase()}'.tr(), style: AppFonts.cardInfo),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${'origin'.tr().substring(0, 1).toUpperCase()}${'origin'.tr().substring(1)}:',
+                            style: AppFonts.cardText,
+                          ),
+                          Text(character.originName, style: AppFonts.cardInfo),
                           const SizedBox(height: 8),
                           Text('last_known_location'.tr(), style: AppFonts.cardText),
                           Text(character.lastLocationName, style: AppFonts.cardInfo),
@@ -138,7 +144,7 @@ class CharacterDetailPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 32), // <-- Espaço grande após as informações
+                          const SizedBox(height: 32), 
                         ],
                       ),
                     ),
