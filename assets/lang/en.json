@@ -1,0 +1,22 @@
+{
+  "select_language": "Select language",
+  "menu": "Menu",
+  "error_loading_characters": "Error loading characters:",
+  "search_character": "Search character...",
+  "gender": "Gender:",
+  "last_known_location": "Last known location:",
+  "first_seen_in": "First seen in:",
+  "number_of_episodes": "Number of episodes:",
+  "unknown": "Unknown",
+  "status_alive": "Alive",
+  "status_dead": "Dead",
+  "status_unknown": "Unknown",
+  "species_human": "Human",
+  "species_alien": "Alien",
+  "species_unknown": "Unknown",
+  "gender_male": "Male",
+  "gender_female": "Female",
+  "gender_genderless": "Genderless",
+  "gender_unknown": "Unknown",
+  "episode": "Episode"
+}

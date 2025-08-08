@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/theme/app_colors.dart';
 import 'package:rick_and_morty_app/theme/app_fonts.dart';
@@ -31,18 +32,24 @@ class _EpisodeListPageState extends State<EpisodeListPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Erro ao carregar episódios'));
+            return Center(child: Text('error_loading_characters'.tr()));
           }
           final episodes = snapshot.data ?? [];
           return ListView.builder(
             itemCount: episodes.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                episodes[index].toUpperCase(),
-                style: AppFonts.episode.copyWith(color: AppColors.fontWhite)
-              ),
-              dense: true,
-            ),
+            itemBuilder: (context, index) {
+              final episodeName = episodes[index];
+              final translated = episodeName.toLowerCase().startsWith('episode')
+                  ? 'episode'.tr() + episodeName.substring(7)
+                  : episodeName;
+              return ListTile(
+                title: Text(
+                  translated.toUpperCase(),
+                  style: AppFonts.episode.copyWith(color: AppColors.fontWhite),
+                ),
+                dense: true,
+              );
+            },
           );
         },
       ),

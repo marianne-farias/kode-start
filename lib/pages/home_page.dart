@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/api_service.dart';
 import '../models/character_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'menu_page.dart';
 import '../widgets/character_card.dart';
 import '../widgets/app_bar.dart';
 import '../theme/app_colors.dart';
@@ -16,6 +18,69 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Atualiza a lista de personagens (pull-to-refresh)
+  Future<void> _refresh() async {
+    setState(() {
+      _currentPage = 1;
+      _characters.clear();
+      _hasMore = true;
+      _errorMessage = null;
+    });
+    await _fetchCharacters();
+  }
+
+  // Busca personagens da API
+  Future<void> _fetchCharacters() async {
+    if (_isLoading || !_hasMore) return;
+    setState(() => _isLoading = true);
+    try {
+      final newCharacters = await ApiService.fetchCharacters(page: _currentPage);
+      setState(() {
+        if (_currentPage == 1) {
+          _characters.clear();
+        }
+        _characters.addAll(newCharacters);
+        _hasMore = newCharacters.length == _pageSize;
+        _errorMessage = null;
+        _currentPage++;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+        _hasMore = false;
+      });
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // Abre detalhes do personagem
+  void _openDetails(Character character) {
+    setState(() => _showBack = true);
+    _navigatorKey.currentState?.push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => CharacterDetailPage(character: character),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    ).then((_) {
+      setState(() => _showBack = false);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCharacters();
+  }
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final ScrollController _scrollController = ScrollController();
   final List<Character> _characters = [];
@@ -25,85 +90,10 @@ class _HomePageState extends State<HomePage> {
   bool _hasMore = true;
   String? _errorMessage;
   bool _showBack = false;
+  bool _showMenu = false;
   bool _showSearch = false;
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchCharacters();
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300 &&
-          !_isLoading &&
-          _hasMore) {
-        _fetchCharacters();
-      }
-    });
-  }
-
-  Future<void> _fetchCharacters() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final newCharacters = await ApiService.fetchCharacters(page: _currentPage);
-      setState(() {
-        _characters.addAll(newCharacters);
-        _currentPage++;
-        if (newCharacters.length < _pageSize) _hasMore = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Erro ao carregar personagens: $e';
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _refresh() async {
-    setState(() {
-      _characters.clear();
-      _currentPage = 1;
-      _hasMore = true;
-      _errorMessage = null;
-    });
-    await _fetchCharacters();
-  }
-
-  void _openDetails(Character character) {
-    setState(() => _showBack = true);
-    _navigatorKey.currentState?.push(
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CharacterDetailPage(character: character),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          final offsetAnimation = Tween<Offset>(
-            begin: const Offset(1.0, 0.0),
-            end: Offset.zero,
-          ).animate(animation);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        },
-      ),
-    ).then((_) => setState(() => _showBack = false));
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _searchController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,15 +120,24 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 )
-              : IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.white, size: 31.46),
-                  onPressed: () {
-                    // seu menu aqui
-                  },
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-          showSearchButton: !_showBack,
+              : _showMenu
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white, size: 31.46),
+                      onPressed: () {
+                        setState(() => _showMenu = false);
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.menu, color: Colors.white, size: 31.46),
+                      onPressed: () {
+                        setState(() => _showMenu = true);
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+          showSearchButton: !_showBack && !_showMenu,
           onSearch: () {
             setState(() {
               if (_showSearch) {
@@ -151,6 +150,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Stack(
           children: [
+            // Conteúdo da home sempre fixo
             Navigator(
               key: _navigatorKey,
               onPopPage: (route, result) {
@@ -202,25 +202,25 @@ class _HomePageState extends State<HomePage> {
                       autofocus: true,
                       style: AppFonts.cardInfo.copyWith(color: Colors.white),
                       cursorColor: Colors.white,
-                      decoration: const InputDecoration(
-                          hintText: 'Search character...',
-                          isDense: true,
-                          contentPadding: EdgeInsets.all(10),
-                          filled: true,
-                          fillColor: AppColors.appBarColor,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)), // bordas arredondadas
-                            borderSide: BorderSide.none, // remove a linha branca
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            borderSide: BorderSide.none,
-                          ),
+                      decoration: InputDecoration(
+                        hintText: 'search_character'.tr(),
+                        isDense: true,
+                        contentPadding: EdgeInsets.all(10),
+                        filled: true,
+                        fillColor: AppColors.appBarColor,
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          borderSide: BorderSide.none,
                         ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       onChanged: (value) {
                         setState(() {
                           _searchQuery = value;
@@ -230,6 +230,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            // Menu animado por cima
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 350),
+              transitionBuilder: (child, animation) {
+                final isMenu = child.key == const ValueKey('menu');
+                final offsetTween = isMenu
+                    ? Tween<Offset>(begin: const Offset(-1, 0), end: Offset.zero)
+                    : Tween<Offset>(begin: Offset.zero, end: const Offset(1, 0));
+                return SlideTransition(
+                  position: animation.drive(offsetTween),
+                  child: child,
+                );
+              },
+              child: _showMenu
+                  ? const MenuPage(key: ValueKey('menu'))
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

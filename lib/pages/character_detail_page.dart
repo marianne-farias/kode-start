@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/character_model.dart';
@@ -82,26 +83,26 @@ class CharacterDetailPage extends StatelessWidget {
                               ),
                               Flexible(
                                 child: Text(
-                                  '${character.status} - ${character.species}',
+                                  '${'status_${character.status.toLowerCase()}'.tr()} - ${'species_${character.species.toLowerCase()}'.tr()}',
                                   style: AppFonts.cardInfo,
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text('Gender:', style: AppFonts.cardText),
-                          Text(character.gender, style: AppFonts.cardInfo),
+                          Text('gender'.tr(), style: AppFonts.cardText),
+                          Text('gender_${character.gender.toLowerCase()}'.tr(), style: AppFonts.cardInfo),
                           const SizedBox(height: 8),
-                          Text('Last known location:', style: AppFonts.cardText),
+                          Text('last_known_location'.tr(), style: AppFonts.cardText),
                           Text(character.lastLocationName, style: AppFonts.cardInfo),
                           const SizedBox(height: 8),
-                          Text('First seen in:', style: AppFonts.cardText),
+                          Text('first_seen_in'.tr(), style: AppFonts.cardText),
                           Text(
-                            character.firstEpisodeName ?? 'Unknown',
+                            character.firstEpisodeName ?? 'unknown'.tr(),
                             style: AppFonts.cardInfo,
                           ),
                           const SizedBox(height: 8),
-                          Text('Number of episodes:', style: AppFonts.cardText),
+                          Text('number_of_episodes'.tr(), style: AppFonts.cardText),
                           RichText(
                             text: TextSpan(
                               style: AppFonts.cardInfo,
