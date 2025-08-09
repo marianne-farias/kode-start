@@ -51,10 +51,10 @@ Responsável por inicializar o app, configurar tema, internacionalização e def
 
 ## GIFs de demonstração
 
-![Navegação: Home page > Detalhes do personagem > Lista de episódios](C:\Users\faria\FlutterProjects\rick_and_morty_app\kode-start\docs\Navegação-DetailCard-ListaDeEpisódios.gif)
-![Barra de pesquisa](C:\Users\faria\FlutterProjects\rick_and_morty_app\kode-start\docs\BarraDePesquisa.gif)
-![Seleção de idioma](C:\Users\faria\FlutterProjects\rick_and_morty_app\kode-start\docs\SelecionarIdioma.gif)
-![Scroll Infinito](C:\Users\faria\FlutterProjects\rick_and_morty_app\kode-start\docs\InfinityScrolling.gif)
+![Navegação: Home page > Detalhes do personagem > Lista de episódios](docs\Navegação-DetailCard-ListaDeEpisódios.gif)
+![Barra de pesquisa](docs\BarraDePesquisa.gif)
+![Seleção de idioma](docs\SelecionarIdioma.gif)
+![Scroll Infinito](docs\InfinityScrolling.gif)
 
 ---
 
