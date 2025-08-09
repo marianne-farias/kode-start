@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../repository/api_repository.dart';
 import '../models/character_model.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'menu_page.dart';
-import '../widgets/character_card.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/character_card.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
+import '../widgets/search_bar.dart';
+import 'menu_page.dart';
 import 'character_detail_page.dart';
 
 
@@ -102,11 +102,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCharacters = _searchQuery.isEmpty
-        ? _characters
-        : _characters.where((c) =>
-            c.name.toLowerCase().contains(_searchQuery.toLowerCase())
-          ).toList();
+
+  final filteredCharacters = _searchQuery.isEmpty
+    ? _characters
+    : _characters.where((c) =>
+      c.name.toLowerCase().contains(_searchQuery.toLowerCase())
+      ).toList();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -195,45 +196,13 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             if (_showSearch && !_showBack)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Material(
-                    elevation: 2,
-                    borderRadius: BorderRadius.circular(10),
-                    child: TextField(
-                      controller: _searchController,
-                      autofocus: true,
-                      style: AppFonts.cardInfo.copyWith(color: Colors.white),
-                      cursorColor: Colors.white,
-                      decoration: InputDecoration(
-                        hintText: 'search_character'.tr(),
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(10),
-                        filled: true,
-                        fillColor: AppColors.appBarColor,
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _searchQuery = value;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+              SearchBarWidget(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
               ),
             // Menu animado por cima
             AnimatedSwitcher(
