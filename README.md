@@ -2,6 +2,34 @@
 
 Este projeto Flutter consome a API do Rick and Morty, exibindo personagens, detalhes, lista de episódios e permite troca de idioma (PT/EN). Abaixo, um resumo do papel de cada arquivo.
 
+## Arquitetura e Padrões Utilizados
+
+- **Arquitetura em Camadas (Layered Architecture):**
+	- O projeto está organizado em camadas separando responsabilidades: 
+		- `models/` para os DTOs e entidades de dados,
+		- `repository/` para acesso à API e lógica de dados,
+		- `pages/` para as telas e lógica de apresentação,
+		- `widgets/` para componentes reutilizáveis de UI,
+		- `theme/` para design system (cores, fontes).
+
+- **Padrão Repository:**
+	- O acesso à API é abstraído pelo repositório (`api_repository.dart`), facilitando manutenção, testes e possíveis trocas de fonte de dados.
+
+- **Gerenciamento de Estado:**
+	- O estado é gerenciado localmente em cada página usando `StatefulWidget` e `setState`, por simplicidade e clareza, já que o app é pequeno.
+
+- **Internacionalização (i18n):**
+	- Implementada com o pacote `easy_localization`, permitindo alternância dinâmica entre PT e EN.
+
+- **Boas Práticas Flutter:**
+	- Componentização de UI com widgets reutilizáveis.
+	- Uso de temas centralizados para cores e fontes.
+	- Código comentado e organizado para facilitar leitura e manutenção.
+
+- **Consumo de API REST:**
+	- Utiliza o pacote `dio` para requisições HTTP à API REST do Rick and Morty.
+
+
 ## Estrutura dos arquivos principais
 
 ### main.dart
@@ -32,10 +60,6 @@ Responsável por inicializar o app, configurar tema, internacionalização e def
 
 ---
 
-> Para ver exemplos de navegação, busca e troca de idioma, consulte os GIFs na seção abaixo.
-
----
-
 ## Como rodar o projeto
 
 1. Instale as dependências:
@@ -46,15 +70,6 @@ Responsável por inicializar o app, configurar tema, internacionalização e def
 	```sh
 	flutter run
 	```
-
----
-
-## GIFs de demonstração
-
-![Navegação: Home page > Detalhes do personagem > Lista de episódios](docs\Navegação-DetailCard-ListaDeEpisódios.gif)
-![Barra de pesquisa](docs\BarraDePesquisa.gif)
-![Seleção de idioma](docs\SelecionarIdioma.gif)
-![Scroll Infinito](docs\InfinityScrolling.gif)
 
 ---
 
