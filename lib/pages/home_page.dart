@@ -94,9 +94,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    // Só busca mais se não estiver filtrando por busca
-    if (_searchQuery.isEmpty &&
-        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
+    // Busca mais personagens ao rolar, tanto para busca quanto para lista geral
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
         !_isLoading && _hasMore) {
       _fetchCharacters();
     }
