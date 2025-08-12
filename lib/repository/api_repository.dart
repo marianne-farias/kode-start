@@ -10,9 +10,13 @@ class ApiRepository {
 
   /// Busca lista de personagens paginada da API
   /// Para cada personagem, busca também o nome do primeiro episódio
-  static Future<List<Character>> fetchCharacters({int page = 1}) async {
+  static Future<List<Character>> fetchCharacters({int page = 1, String? name}) async {
     try {
-      final response = await _dio.get('https://rickandmortyapi.com/api/character?page=$page');
+      String url = 'https://rickandmortyapi.com/api/character?page=$page';
+      if (name != null && name.isNotEmpty) {
+        url += '&name=${Uri.encodeComponent(name)}';
+      }
+      final response = await _dio.get(url);
       final data = response.data;
       final List results = data['results'];
       List<Character> characters = results.map((json) => Character.fromJson(json)).toList();
@@ -34,6 +38,10 @@ class ApiRepository {
 
       return updatedCharacters;
     } on DioException catch (e) {
+      // Se for erro 404, significa que não há resultados para a busca
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
       throw Exception('Erro ao carregar personagens: ${e.message}');
     }
   }

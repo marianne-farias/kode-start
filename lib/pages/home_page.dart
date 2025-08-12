@@ -38,7 +38,12 @@ class _HomePageState extends State<HomePage> {
     if (_isLoading || !_hasMore) return;
     setState(() => _isLoading = true);
     try {
-  final newCharacters = await ApiRepository.fetchCharacters(page: _currentPage);
+      List<Character> newCharacters;
+      if (_searchQuery.isEmpty) {
+        newCharacters = await ApiRepository.fetchCharacters(page: _currentPage);
+      } else {
+        newCharacters = await ApiRepository.fetchCharacters(page: _currentPage, name: _searchQuery);
+      }
       setState(() {
         if (_currentPage == 1) {
           _characters.clear();
@@ -85,6 +90,23 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Inicializa a busca de personagens ao abrir a tela
     _fetchCharacters();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    // Só busca mais se não estiver filtrando por busca
+    if (_searchQuery.isEmpty &&
+        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoading && _hasMore) {
+      _fetchCharacters();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -100,14 +122,20 @@ class _HomePageState extends State<HomePage> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchQuery = value;
+      _currentPage = 1;
+      _hasMore = true;
+      _characters.clear();
+    });
+    _fetchCharacters();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-  final filteredCharacters = _searchQuery.isEmpty
-    ? _characters
-    : _characters.where((c) =>
-      c.name.toLowerCase().contains(_searchQuery.toLowerCase())
-      ).toList();
+  final filteredCharacters = _characters;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -198,11 +226,7 @@ class _HomePageState extends State<HomePage> {
             if (_showSearch && !_showBack)
               SearchBarWidget(
                 controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value;
-                  });
-                },
+                onChanged: _onSearchChanged,
               ),
             // Menu animado por cima
             AnimatedSwitcher(
