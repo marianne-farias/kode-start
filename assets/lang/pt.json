@@ -1,0 +1,22 @@
+{
+  "select_language": "Selecionar idioma",
+  "menu": "Menu",
+  "error_loading_characters": "Erro ao carregar personagens:",
+  "search_character": "Buscar personagem...",
+  "gender": "Gênero:",
+  "last_known_location": "Última localização conhecida:",
+  "first_seen_in": "Visto pela primeira vez em:",
+  "number_of_episodes": "Número de episódios:",
+  "unknown": "Desconhecido",
+  "status_alive": "Vivo",
+  "status_dead": "Morto",
+  "status_unknown": "Desconhecido",
+  "species_human": "Humano",
+  "species_alien": "Alienígena",
+  "species_unknown": "Desconhecido",
+  "gender_male": "Masculino",
+  "gender_female": "Feminino",
+  "gender_genderless": "Sem gênero",
+  "gender_unknown": "Desconhecido",
+  "episode": "Episódio"
+}
